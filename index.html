@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Expense Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: #3f51b5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #555;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3f51b5;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3f51b5;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #303f9f;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .friends-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .friend-tag {
+            background: #e8eaf6;
+            color: #3f51b5;
+            padding: 8px 16px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .remove-friend {
+            background: none;
+            border: none;
+            color: #3f51b5;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .remove-friend:hover {
+            color: #f44336;
+        }
+
+        .expense-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .expense-card:hover {
+            border-color: #3f51b5;
+            transform: translateY(-2px);
+        }
+
+        .expense-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .expense-form input, .expense-form select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .participants-section {
+            margin: 20px 0;
+        }
+
+        .participants-section label {
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3f51b5;
+        }
+
+        .expense-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .per-person-cost {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .settlement-section {
+            background: linear-gradient(135deg, #e8eaf6 0%, #e1f5fe 100%);
+            border: 2px solid #3f51b5;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .settlement-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .settlement-icon {
+            width: 32px;
+            height: 32px;
+            background: #3f51b5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .settlement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .balance-item, .settlement-item {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-positive {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .balance-negative {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .balance-zero {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .settlement-item {
+            border: 1px solid #e0e0e0;
+        }
+
+        .settlement-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .settlement-from {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .settlement-to {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .settlement-amount {
+            color: #3f51b5;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .all-settled {
+            background: #e8f5e8;
+            color: #2e7d32;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .total-summary {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #3f51b5;
+            text-align: center;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #555;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .expense-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .settlement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">👥</div>
+            <h1>Group Expense Tracker</h1>
+        </div>
+
+        <!-- Friends Management -->
+        <div class="section">
+            <h2>Manage Friends</h2>
+            <div class="input-group">
+                <input type="text" id="newFriendInput" placeholder="Add friend name" />
+                <button class="btn btn-primary" onclick="addFriend()">
+                    ➕ Add
+                </button>
+            </div>
+            <div class="friends-list" id="friendsList"></div>
+        </div>
+
+        <!-- Expenses -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Expenses</h2>
+                <button class="btn btn-success" onclick="addExpense()">
+                    ➕ Add Expense
+                </button>
+            </div>
+            <div id="expensesList"></div>
+        </div>
+
+        <!-- Settlement Summary -->
+        <div id="settlementSection" class="settlement-section" style="display: none;">
+            <div class="settlement-header">
+                <div class="settlement-icon">🧮</div>
+                <h2>Settlement Summary</h2>
+            </div>
+            <div class="settlement-grid">
+                <div>
+                    <h3 style="margin-bottom: 15px; color: #555;">Individual Balances</h3>
+                    <div id="balancesList"></div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px; color: #555;">Who Pays Whom</h3>
+                    <div id="settlementsList"></div>
+                </div>
+            </div>
+            <div class="total-summary">
+                <div class="total-amount" id="totalAmount"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let friends = ['Friend 1', 'Friend 2', 'Friend 3'];
+        let expenses = [];
+        let nextExpenseId = 1;
+
+        function renderFriends() {
+            const friendsList = document.getElementById('friendsList');
+            friendsList.innerHTML = '';
+            
+            friends.forEach((friend, index) => {
+                const friendTag = document.createElement('div');
+                friendTag.className = 'friend-tag';
+                friendTag.innerHTML = `
+                    <span>${friend}</span>
+                    ${friends.length > 1 ? `<button class="remove-friend" onclick="removeFriend(${index})">×</button>` : ''}
+                `;
+                friendsList.appendChild(friendTag);
+            });
+        }
+
+        function addFriend() {
+            const input = document.getElementById('newFriendInput');
+            const name = input.value.trim();
+            
+            if (name && !friends.includes(name)) {
+                friends.push(name);
+                input.value = '';
+                renderFriends();
+                renderExpenses();
+            }
+        }
+
+        function removeFriend(index) {
+            if (friends.length > 1) {
+                const friendToRemove = friends[index];
+                friends.splice(index, 1);
+                
+                // Remove expenses involving this friend
+                expenses = expenses.filter(expense => 
+                    expense.paidBy !== friendToRemove && !expense.participants.includes(friendToRemove)
+                );
+                
+                renderFriends();
+                renderExpenses();
+                calculateSettlement();
+            }
+        }
+
+        function addExpense() {
+            const expense = {
+                id: nextExpenseId++,
+                description: '',
+                amount: 0,
+                paidBy: friends[0],
+                participants: [...friends],
+                date: new Date().toISOString().split('T')[0]
+            };
+            expenses.push(expense);
+            renderExpenses();
+        }
+
+        function removeExpense(id) {
+            expenses = expenses.filter(expense => expense.id !== id);
+            renderExpenses();
+            calculateSettlement();
+        }
+
+        function updateExpense(id, field, value) {
+            const expense = expenses.find(exp => exp.id === id);
+            if (expense) {
+                expense[field] = value;
+                calculateSettlement();
+            }
+        }
+
+        function updateParticipant(id, friend, checked) {
+            const expense = expenses.find(exp => exp.id === id);
+            if (expense) {
+                if (checked) {
+                    if (!expense.participants.includes(friend)) {
+                        expense.participants.push(friend);
+                    }
+                } else {
+                    expense.participants = expense.participants.filter(p => p !== friend);
+                }
+                calculateSettlement();
+            }
+        }
+
+        function renderExpenses() {
+            const expensesList = document.getElementById('expensesList');
+            
+            if (expenses.length === 0) {
+                expensesList.innerHTML = `
+                    <div class="empty-state">
+                        No expenses added yet. Click "Add Expense" to get started!
+                    </div>
+                `;
+                return;
+            }
+
+            expensesList.innerHTML = '';
+            
+            expenses.forEach(expense => {
+                const expenseCard = document.createElement('div');
+                expenseCard.className = 'expense-card';
+                
+                const participantCheckboxes = friends.map(friend => `
+                    <div class="checkbox-item">
+                        <input type="checkbox" 
+                               id="participant-${expense.id}-${friend}"
+                               ${expense.participants.includes(friend) ? 'checked' : ''}
+                               onchange="updateParticipant(${expense.id}, '${friend}', this.checked)"
+                        />
+                        <label for="participant-${expense.id}-${friend}">${friend}</label>
+                    </div>
+                `).join('');
+                
+                const paidByOptions = friends.map(friend => 
+                    `<option value="${friend}" ${expense.paidBy === friend ? 'selected' : ''}>${friend} paid</option>`
+                ).join('');
+                
+                const perPersonCost = expense.participants.length > 0 && expense.amount > 0 
+                    ? (parseFloat(expense.amount) / expense.participants.length).toFixed(2)
+                    : '0.00';
+                
+                expenseCard.innerHTML = `
+                    <div class="expense-form">
+                        <input type="text" 
+                               value="${expense.description}"
+                               placeholder="Description (e.g., Haircut, Dinner)"
+                               onchange="updateExpense(${expense.id}, 'description', this.value)"
+                        />
+                        <input type="number" 
+                               value="${expense.amount}"
+                               placeholder="Amount"
+                               step="0.01"
+                               onchange="updateExpense(${expense.id}, 'amount', this.value)"
+                        />
+                        <select onchange="updateExpense(${expense.id}, 'paidBy', this.value)">
+                            ${paidByOptions}
+                        </select>
+                        <input type="date" 
+                               value="${expense.date}"
+                               onchange="updateExpense(${expense.id}, 'date', this.value)"
+                        />
+                    </div>
+                    
+                    <div class="participants-section">
+                        <label>Who participated in this expense?</label>
+                        <div class="checkbox-group">
+                            ${participantCheckboxes}
+                        </div>
+                    </div>
+                    
+                    <div class="expense-footer">
+                        <div class="per-person-cost">
+                            ${expense.participants.length > 0 && expense.amount > 0 ? `$${perPersonCost} per person` : ''}
+                        </div>
+                        <button class="btn btn-danger" onclick="removeExpense(${expense.id})">
+                            🗑️ Remove
+                        </button>
+                    </div>
+                `;
+                
+                expensesList.appendChild(expenseCard);
+            });
+            
+            calculateSettlement();
+        }
+
+        function calculateSettlement() {
+            if (expenses.length === 0) {
+                document.getElementById('settlementSection').style.display = 'none';
+                return;
+            }
+            
+            // Calculate balances
+            const balances = {};
+            friends.forEach(friend => {
+                balances[friend] = 0;
+            });
+
+            expenses.forEach(expense => {
+                const amount = parseFloat(expense.amount) || 0;
+                if (amount > 0 && expense.participants.length > 0) {
+                    const perPerson = amount / expense.participants.length;
+                    
+                    // Add to payer's balance
+                    balances[expense.paidBy] += amount;
+                    
+                    // Subtract from each participant's balance
+                    expense.participants.forEach(participant => {
+                        balances[participant] -= perPerson;
+                    });
+                }
+            });
+
+            // Create settlement transactions
+            const settlements = [];
+            const debtors = [];
+            const creditors = [];
+
+            Object.entries(balances).forEach(([friend, balance]) => {
+                if (balance > 0.01) {
+                    creditors.push({ friend, amount: balance });
+                } else if (balance < -0.01) {
+                    debtors.push({ friend, amount: -balance });
+                }
+            });
+
+            // Sort by amount to optimize settlements
+            debtors.sort((a, b) => b.amount - a.amount);
+            creditors.sort((a, b) => b.amount - a.amount);
+
+            let i = 0, j = 0;
+            while (i < debtors.length && j < creditors.length) {
+                const debt = debtors[i].amount;
+                const credit = creditors[j].amount;
+                const settleAmount = Math.min(debt, credit);
+
+                if (settleAmount > 0.01) {
+                    settlements.push({
+                        from: debtors[i].friend,
+                        to: creditors[j].friend,
+                        amount: settleAmount
+                    });
+                }
+
+                debtors[i].amount -= settleAmount;
+                creditors[j].amount -= settleAmount;
+
+                if (debtors[i].amount < 0.01) i++;
+                if (creditors[j].amount < 0.01) j++;
+            }
+
+            renderSettlement(balances, settlements);
+        }
+
+        function renderSettlement(balances, settlements) {
+            document.getElementById('settlementSection').style.display = 'block';
+            
+            // Render balances
+            const balancesList = document.getElementById('balancesList');
+            balancesList.innerHTML = '';
+            
+            Object.entries(balances).forEach(([friend, balance]) => {
+                const balanceItem = document.createElement('div');
+                balanceItem.className = 'balance-item';
+                
+                let balanceClass = 'balance-zero';
+                let balanceText = '$0.00';
+                
+                if (balance > 0.01) {
+                    balanceClass = 'balance-positive';
+                    balanceText = `+$${balance.toFixed(2)}`;
+                } else if (balance < -0.01) {
+                    balanceClass = 'balance-negative';
+                    balanceText = `-$${Math.abs(balance).toFixed(2)}`;
+                }
+                
+                balanceItem.innerHTML = `
+                    <span style="font-weight: 600;">${friend}</span>
+                    <span class="${balanceClass}">${balanceText}</span>
+                `;
+                
+                balancesList.appendChild(balanceItem);
+            });
+            
+            // Render settlements
+            const settlementsList = document.getElementById('settlementsList');
+            
+            if (settlements.length === 0) {
+                settlementsList.innerHTML = `
+                    <div class="all-settled">
+                        🎉 All settled up! Everyone is even.
+                    </div>
+                `;
+            } else {
+                settlementsList.innerHTML = '';
+                settlements.forEach(settlement => {
+                    const settlementItem = document.createElement('div');
+                    settlementItem.className = 'settlement-item';
+                    settlementItem.innerHTML = `
+                        <div class="settlement-arrow">
+                            <div>
+                                <span class="settlement-from">${settlement.from}</span>
+                                <span style="margin: 0 10px; color: #999;">→</span>
+                                <span class="settlement-to">${settlement.to}</span>
+                            </div>
+                            <span class="settlement-amount">$${settlement.amount.toFixed(2)}</span>
+                        </div>
+                    `;
+                    settlementsList.appendChild(settlementItem);
+                });
+            }
+            
+            // Update total
+            const totalAmount = expenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
+            document.getElementById('totalAmount').textContent = `Total Expenses: $${totalAmount.toFixed(2)}`;
+        }
+
+        // Handle Enter key for adding friends
+        document.getElementById('newFriendInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addFriend();
+            }
+        });
+
+        // Initialize the app
+        renderFriends();
+        renderExpenses();
+    </script>
+</body>
+</html>
